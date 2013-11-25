@@ -4,8 +4,26 @@ import java.io.*;
 public class ABRI {
 
 	private Noeud racine;
+	private ABRI sag;
+	private ABRI sad;
 	private int max, min;
 	private String chainePrefixe;
+	
+	public ABRI getSag() {
+		return sag;
+	}
+
+	public void setSag(ABRI sag) {
+		this.sag = sag;
+	}
+
+	public ABRI getSad() {
+		return sad;
+	}
+
+	public void setSad(ABRI sad) {
+		this.sad = sad;
+	}
 
 	public int getMax() {
 		return max;
@@ -31,29 +49,7 @@ public class ABRI {
 		this.racine = racine;
 	}
 	
-	public ABRI(String path) {
-		racine = null;
-		
-		String liste = ReadFile(path);
-		
-		String[] strArray1 = liste.split(";");
-		String[] strArrayMinMax = strArray1[0].split(":");
-		String[] strArrayArbre = strArray1[1].split(":");
-		int[] intArray1 = new int[strArrayMinMax.length];
-		int[] intArray2 = new int[strArrayArbre.length];
-		
-		for(int i = 0; i < strArrayMinMax.length; i++) {
-		    intArray1[i] = Integer.parseInt(strArrayMinMax[i]);
-		}
-		this.min = intArray1[0];
-		this.max = intArray1[1];
-		
-		for(int i = 0; i < strArrayArbre.length; i++) {
-		    intArray2[i] = Integer.parseInt(strArrayArbre[i]);
-		}
-		for (int z : intArray2){
-			racine = inserer(z, racine); 
-		}	
+	public ABRI() {
 	}
 	
 	public Noeud inserer(int x, Noeud a) {
@@ -63,6 +59,16 @@ public class ABRI {
 		return a;
 	}
 	
+	public ABRI CreerABRI(int[] minmax, int[] val)
+	{
+		this.setMin(minmax[0]);
+		this.setMax(minmax[1]);
+		for (int z : val){
+			this.racine = inserer(z, this.racine); 
+		}
+		return this;
+	}
+
 	public Noeud rechercherEtSupprimer(int x, Noeud a) {
 		if (a == null) return null;
 		if (x == a.getValeur()) return supprimerRacine(a);
@@ -88,18 +94,23 @@ public class ABRI {
 	public void parcoursPrefixe() {
 		System.out.println("Min : " + this.min);
 		System.out.println("Max : " + this.max);
-		if(racine != null)
+		
+		if(this.getRacine() != null)
 		{
 			System.out.println(racine.getValeur());
-			chainePrefixe += racine.getValeur() + ":";
+			chainePrefixe += racine.getValeur() + ":"; 
 			if(racine.getSag() != null)
+			{
 				racine.getSag().setChaine("");
 				racine.getSag().parcoursPrefixe();
 				chainePrefixe += racine.getSag().getChaine();
+			}
 		    if(racine.getSad() != null)
+		    {
 		    	racine.getSad().setChaine("");
 		    	racine.getSad().parcoursPrefixe();
 		    	chainePrefixe += racine.getSad().getChaine();
+		    }
 		}
 		else
 		{
