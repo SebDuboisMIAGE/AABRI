@@ -1,6 +1,3 @@
-import java.io.*;
-
-
 public class ABRI {
 
 	private Noeud racine;
@@ -86,9 +83,127 @@ public class ABRI {
 		return a;
 	}
 	
+	public void insererElement(int element){
+		if (this.min < element && this.max > element)
+		{
+			this.inserer(element, this.getRacine());
+		}
+		else 
+		{
+			if(this.min > element)
+			{
+				this.getSag().insererElement(element);
+			}
+			else
+			{
+				this.getSad().insererElement(element);
+			}
+		}
+	}
+	
+	public void supprimerElement(int element){
+		if (this.min < element && this.max > element)
+		{
+			this.rechercherEtSupprimer(element, this.getRacine());
+		}
+		else 
+		{
+			if(this.min > element)
+			{
+				this.getSag().supprimerElement(element);
+			}
+			else
+			{
+				this.getSad().supprimerElement(element);
+			}
+		}
+	}
+	
 	public Noeud dernierDescendant(Noeud a) {
 		if (a.getSag()== null) return a;
 		return dernierDescendant(a.getSag());
+	}
+
+	/*
+	public void insererElementABR(ABR abr){
+		if(this.getRacine() != null)
+		{
+			abr.inserer(racine.getValeur(), abr.getRacine());
+			if(racine.getSag() != null)
+			{
+				racine.getSag().insererElementABR(abr);
+			}
+		    if(racine.getSad() != null)
+		    {
+		    	racine.getSad().insererElementABR(abr);
+		    }
+		}
+	}
+	*/
+	public String afficherToutArbre(){
+		String chaine = "";
+		chaine += this.ecrireParcoursPrefixeFichier();
+		if(this.getSag() != null)
+		{
+			chaine += this.getSag().afficherToutArbre();
+		}
+		if(this.getSad() != null)
+		{
+			chaine += this.getSad().afficherToutArbre();
+		}		
+		return chaine;
+	}
+	
+	public String ecrireToutArbreFichier()
+	{
+		String chaine = "";
+		chaine += this.ecrireParcoursPrefixeFichier();
+		if(this.getSag() != null)
+		{
+			chaine += this.getSag().ecrireToutArbreFichier();
+		}
+		if(this.getSad() != null)
+		{
+			chaine += this.getSad().ecrireToutArbreFichier();
+		}		
+		return chaine;
+	}
+	
+	public String ecrireParcoursPrefixeFichier()
+	{
+		String chaine = "";
+		chaine += this.getMin() + ":" + this.getMax() + ";";
+		if(this.getRacine() != null)
+		{
+			chaine += racine.getValeur() + ":";
+			if(racine.getSag() != null)
+			{
+				chaine += racine.getSag().ecrireParcoursPrefixeFichier();
+			}
+		    if(racine.getSad() != null)
+		    {
+		    	chaine += racine.getSad().ecrireParcoursPrefixeFichier();
+		    }
+		}
+		chaine = chaine.substring(0,chaine.length()-1);
+		chaine += "\n";
+		return chaine;
+	}
+	
+	public boolean dispoIntervalle(int[] tab){
+		boolean intervallePossible = true;
+		if (((this.getMax() > tab[0]) && (this.getMin() < tab[0])) || ((this.getMax() > tab[1]) && (this.getMin() < tab[1])) || ((this.getMin() > tab[0]) && (this.getMax() < tab[1]))){
+			intervallePossible = false;
+		}
+		else{
+			if(this.getSag() != null){
+				intervallePossible = this.getSag().dispoIntervalle(tab);
+			}
+			if(this.getSad() != null){
+				intervallePossible = this.getSad().dispoIntervalle(tab);
+			}
+		}
+		return intervallePossible;
 	}
 
 	public void parcoursPrefixe() {
@@ -115,44 +230,6 @@ public class ABRI {
 		else
 		{
 			System.out.println("null");
-		}
-	}
-	
-	public String ReadFile(String path){
-		
-		String chaine="";
-			
-		try{
-			InputStream ips = new FileInputStream(path); 
-			InputStreamReader ipsr = new InputStreamReader(ips);
-			BufferedReader br = new BufferedReader(ipsr);
-			String ligne;
-			while ((ligne = br.readLine())!=null){
-				chaine += ligne;
-			}
-			br.close(); 
-		}		
-		catch (Exception e){
-			System.out.println(e.toString());
-		}
-		
-		return chaine;
-	}
-	public void WriteFile(String path){
-		this.chainePrefixe = "";
-		this.parcoursPrefixe();
-		String chaine = this.min + ":" + this.max + ";" + chainePrefixe;
-		chaine = chaine.substring(0,chaine.length()-1);
-		
-		try {
-			FileWriter fw = new FileWriter (path);
-			BufferedWriter bw = new BufferedWriter (fw);
-			PrintWriter fichierSortie = new PrintWriter (bw); 
-			fichierSortie.println (chaine + "\n"); 
-			fichierSortie.close();
-		}
-		catch (Exception e){
-			System.out.println(e.toString());
 		}
 	}
 }

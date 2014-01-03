@@ -54,6 +54,30 @@ public class Noeud {
 	      this.chaine += this.getSad().getChaine();
 	    }
 	}
+	
+	public String ecrireParcoursPrefixeFichier()
+	{
+		String chaine = "";
+		chaine += this.getValeur() + ":";
+		if(this.getSag() != null){
+		      chaine += this.getSag().ecrireParcoursPrefixeFichier();
+		}
+	    if(this.getSad() != null){
+	    	chaine += this.getSad().ecrireParcoursPrefixeFichier();
+	    }
+	    return chaine;
+	}
+	
+	public void insererElementABR(ABR abr)
+	{
+		abr.inserer(getValeur(), abr.getRacine());
+		if(this.getSag() != null){
+		      this.getSag().insererElementABR(abr);
+		}
+	    if(this.getSad() != null){
+	    	this.getSad().insererElementABR(abr);
+	    }
+	}
 
 	@Override
 	public String toString() {
