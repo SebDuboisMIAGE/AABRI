@@ -68,19 +68,10 @@ public class AABRI {
 		}
 	}
 	
-	public boolean dispoIntervalle(int[] tab){
-		if (racine == null) return true;
-		if (((racine.getMax() > tab[0]) && (racine.getMin() < tab[0])) || ((racine.getMax() > tab[1]) && (racine.getMin() < tab[1])) || ((racine.getMin() > tab[0]) && (racine.getMax() < tab[1]))){
-			return false;
-		}
-		else{
-			return racine.dispoIntervalle(tab);
-		}
-	}
-	
 	public AABRI genererAabriAleatoire(){
 		int nbnoeud;
 		int bornemax;
+		int[] listeintervalle;
 		int[] intArray1;	
 		int[] intArray2;
 		int nbn = 0;
@@ -88,36 +79,56 @@ public class AABRI {
 		bornemax = 0;
 		nbnoeud = 0;
 		int nbvalpossible = 0;
+		boolean existedeja = false;
 		Scanner saisie = new Scanner(System.in);
 		System.out.println("Nombre de noeuds ? ");
 		nbnoeud = saisie.nextInt();
 		System.out.println("Borne max ? ");
 		bornemax = saisie.nextInt();
-		for(int i = 0; i != nbnoeud; i++){
-			intArray1 = new int[2];
-			intArray1[0] = (int) (Math.random()*bornemax);
-			while ((intArray1[1] - 1) <= intArray1[0]){
-				intArray1[1] = (int) (Math.random()*bornemax);
+		listeintervalle = new int[nbnoeud*2];
+		for(int j = 0; j != nbnoeud * 2; j++){   // on prend toutes les valeurs pour les intervalles
+			int a = (int) (Math.random()*bornemax);
+			existedeja = false;
+			for(int k = 0; k != listeintervalle.length; k++){
+				if(listeintervalle[k] == a){
+					existedeja = true;
+				}
 			}
-			if(dispoIntervalle(intArray1))
-			{
-				ABRI abri = new ABRI();
-				nbvalpossible = intArray1[1] - intArray1[0];
-				while (nbn == 0){
-					nbn = (int) (Math.random()*nbvalpossible);
-				}
-				intArray2 = new int[nbn];
-				for(int j = 0; j != nbn; j++){
-					element = (int) (intArray1[0] + Math.random() * (intArray1[1] - intArray1[0] + 1));
-					intArray2[j] = element;
-				}
-				abri.CreerABRI(intArray1, intArray2);
-				racine = inserer(abri, racine);
-				nbn = 0;
+			if(existedeja == true){
+				j--;
 			}
 			else{
-				i--;
+				listeintervalle[j] = a;
 			}
+		}
+		
+		triBulleCroissant(listeintervalle); // on trie par ordre croissant le tableau
+		for(int z=0;z != nbnoeud*2;z++){
+			System.out.println(listeintervalle[z]);
+		}
+		
+		for(int l = 0; l != nbnoeud; l++){
+			ABRI abri = new ABRI();
+			intArray1 = new int[2];
+			intArray1[0] = listeintervalle[2*l];
+			intArray1[1] = listeintervalle[(2*l)+1]; // min et max du premier intervalle
+			nbvalpossible = intArray1[1] - intArray1[0];  //nb val possibles
+			System.out.println("nb : " + nbvalpossible);
+			while (nbn == 0 && nbvalpossible != 1){
+				nbn = (int) (Math.random()*nbvalpossible);  // nb noeud dans ABRI
+			}
+			if(nbvalpossible == 1){
+				nbn = nbvalpossible;
+			}
+			System.out.println(nbn);
+			intArray2 = new int[nbn];  //création d'un tableau d'élément
+			for(int j = 0; j != nbn; j++){
+				element = (int) (intArray1[0] + Math.random() * (intArray1[1] - intArray1[0] + 1));
+				intArray2[j] = element;
+			}
+			abri.CreerABRI(intArray1, intArray2);
+			racine = inserer(abri, racine);
+			nbn = 0;
 		}
 		return this;		
 	}
@@ -170,6 +181,23 @@ public class AABRI {
 		else{
 			System.out.println("L'abre est vide");
 		}
+	}
+	
+	public static void triBulleCroissant(int tableau[]) {
+		int longueur = tableau.length;
+		int tampon = 0;
+		boolean permut; 
+		do {
+			permut = false;
+			for (int i = 0; i < longueur - 1; i++) {
+				if (tableau[i] > tableau[i + 1]) {
+					tampon = tableau[i];
+					tableau[i] = tableau[i + 1];
+					tableau[i + 1] = tampon;
+					permut = true;
+				}
+			}
+		} while (permut);
 	}
 
 	public ABRI getValeur() {
