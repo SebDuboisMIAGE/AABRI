@@ -32,14 +32,14 @@ public class ABR {
 	public ABR() {
 	}
 	
-	public Noeud inserer(int x, Noeud a) {
+	public Noeud inserer(int x, Noeud a) {  //insere un element dans ABR
 		if (a == null) return new Noeud(x);
 		if (x < a.getValeur()) a.setSag(inserer(x, a.getSag()));
 		else if (x > a.getValeur()) a.setSad(inserer(x, a.getSad())); 
 		return a;
 	}
 	
-	public void AABRIversABR(AABRI abri){
+	public void AABRIversABR(AABRI abri){	// Lit AABRI et ecrit chaque element dans ABR
 		if(abri.racine != null){
 			this.ConstruireABR(abri.racine);
 			System.out.println(this.afficherABR());
@@ -49,7 +49,7 @@ public class ABR {
 		}
 	}
 	
-	public void ConstruireABR(ABRI abri){
+	public void ConstruireABR(ABRI abri){		// Construction d'un ABR
 		this.AjouterDansABR(abri);
 		if(abri.getSag() != null)
 		{
@@ -61,7 +61,7 @@ public class ABR {
 		}		
 	}
 	
-	public void AjouterDansABR(ABRI abri){
+	public void AjouterDansABR(ABRI abri){		//Insertion de l'element lu dans ABR
 		if(abri.getRacine() != null)
 		{
 			racine = this.inserer(abri.getRacine().getValeur(), racine);
@@ -76,9 +76,9 @@ public class ABR {
 		}
 	}
 	
-	public String afficherABR(){
+	public String afficherABR(){		//Afficher l'ABR
 		String chaine = "";
-		chaine += this.ecrireParcoursPrefixeFichier();
+		chaine += this.ecrireParcoursPrefixeABR();
 		if(this.getSag() != null)
 		{
 			chaine += this.getSag().afficherABR();
@@ -90,7 +90,7 @@ public class ABR {
 		return chaine;
 	}
 	
-	public String ecrireParcoursPrefixeFichier()
+	public String ecrireParcoursPrefixeABR()  // Recupere chaque noeud de l'ABR
 	{
 		String chaine = "";
 		if(this.getRacine() != null)
@@ -110,7 +110,7 @@ public class ABR {
 		return chaine;
 	}
 	
-	public void ecrireNoeudDansABR(Noeud noeud){
+	public void ecrireNoeudDansABR(Noeud noeud){		// Inserer noeud dans ABR
 		racine = this.inserer(noeud.getValeur(), racine);
 		if(noeud.getSag() != null)
 		{

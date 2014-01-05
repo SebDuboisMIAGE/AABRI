@@ -9,13 +9,13 @@ import java.util.Scanner;
 
 
 public class AABRI {
-	public ABRI racine;
+	public ABRI racine;  
 	
 	public AABRI(){
 		racine = null;
 	}
 	
-	public AABRI(String path) // lecture du fichier pass√© en param√®tre
+	public AABRI(String path) // lecture du fichier passee en parametre
 	{
 		racine = null;
 		try{
@@ -31,7 +31,7 @@ public class AABRI {
 				int[] intArray1 = new int[strArrayMinMax.length];	
 				int[] intArray2 = new int[strArrayArbre.length];
 				
-				for(int i = 0; i < strArrayMinMax.length; i++) {	// cr√©ation d'un tableau d'entier des valeurs des noeuds
+				for(int i = 0; i < strArrayMinMax.length; i++) {	// creation d'un tableau d'entier des valeurs des noeuds
 				    intArray1[i] = Integer.parseInt(strArrayMinMax[i]);
 				}
 				
@@ -39,9 +39,8 @@ public class AABRI {
 				for(int i = 0; i < strArrayArbre.length; i++) {	
 				    intArray2[i] = Integer.parseInt(strArrayArbre[i]);
 				}
-				arbre.CreerABRI(intArray1, intArray2);	 // on cr√©√© un ABRI avec le min et max et les diff√©rents noeuds			
-				racine = inserer(arbre, racine);		// ensuite on ins√®re l'arbre dans l'AABRI
-				//arbre.parcoursPrefixe();				// On lit le parcours pr√©fixe pour contr√¥ler 
+				arbre.CreerABRI(intArray1, intArray2);	 // on cree un ABRI avec le min et max et les diff√©rents noeuds			
+				racine = inserer(arbre, racine);		// ensuite on insere l'arbre dans l'AABRI
 			}
 			br.close(); 
 		}
@@ -50,14 +49,14 @@ public class AABRI {
 		}
 	}
 	
-	public void ecrireAABRIFichier(String savepath)
+	public void ecrireAABRIFichier(String savepath) //ecrire l'AABRI dans le fichier de sortie
 	{
-		String chaine = "";
+		String chaine = "";	  // On recupere le contenu a ecrire dans une chaine
 		if(this.racine != null){
-			chaine = racine.ecrireToutArbreFichier();
+			chaine = racine.ecrireToutArbreFichier(); 
 		}		
 		try {
-			FileWriter fw = new FileWriter (savepath);
+			FileWriter fw = new FileWriter (savepath);	// ecriture de la chaine dans le fichier
 			BufferedWriter bw = new BufferedWriter (fw);
 			PrintWriter fichierSortie = new PrintWriter (bw); 
 			fichierSortie.println (chaine + "\n"); 
@@ -68,66 +67,68 @@ public class AABRI {
 		}
 	}
 	
-	public AABRI genererAabriAleatoire(){
-		int nbnoeud;
-		int bornemax;
+	public AABRI genererAabriAleatoire(){   // Permet de generer un AABRI aleatoire
+		int nbnoeud = 0;
+		int bornemax = 0;
+		int nbvalpossible = 0;
+		boolean existedeja = false;
 		int[] listeintervalle;
 		int[] intArray1;	
 		int[] intArray2;
 		int nbn = 0;
 		int element = 0;
-		bornemax = 0;
-		nbnoeud = 0;
-		int nbvalpossible = 0;
-		boolean existedeja = false;
+
 		Scanner saisie = new Scanner(System.in);
 		System.out.println("Nombre de noeuds ? ");
-		nbnoeud = saisie.nextInt();
+		nbnoeud = saisie.nextInt();   // Recupere le nombre de noeuds voulus
 		System.out.println("Borne max ? ");
-		bornemax = saisie.nextInt();
-		listeintervalle = new int[nbnoeud*2];
+		bornemax = saisie.nextInt();	// Recupere la borne maximum
+		listeintervalle = new int[nbnoeud*2];	// Tableau des intervalles
 		for(int j = 0; j != nbnoeud * 2; j++){   // on prend toutes les valeurs pour les intervalles
 			int a = (int) (Math.random()*bornemax);
-			existedeja = false;
+			existedeja = false;		// Une borne d'intervalle ne doit pas deja exister
 			for(int k = 0; k != listeintervalle.length; k++){
 				if(listeintervalle[k] == a){
-					existedeja = true;
+					existedeja = true;  
 				}
 			}
 			if(existedeja == true){
-				j--;
+				j--;		// si elle existe alors on ne l'ajoute pas
 			}
 			else{
-				listeintervalle[j] = a;
+				listeintervalle[j] = a;	// Sinon on l'ajoute au tableau d'intervalle
 			}
 		}
 		
-		triBulleCroissant(listeintervalle); // on trie par ordre croissant le tableau
-		for(int z=0;z != nbnoeud*2;z++){
-			System.out.println(listeintervalle[z]);
-		}
+		/*
+		 * listeintervalle = {min(c),max(a),max(b),min(a),max(c),min(b)} Dans le desordre
+		 */
 		
-		for(int l = 0; l != nbnoeud; l++){
+		triBulleCroissant(listeintervalle); // on trie par ordre croissant le tableau
+		
+		/*
+		 * listeintervalle = {min(a),max(a),min(b),max(b),min(c),max(c)} 
+		 */
+			
+		for(int l = 0; l != nbnoeud; l++){  // Pour chaque intervalle, on cree un ABRI avec des valeurs aleatoires
 			ABRI abri = new ABRI();
 			intArray1 = new int[2];
 			intArray1[0] = listeintervalle[2*l];
 			intArray1[1] = listeintervalle[(2*l)+1]; // min et max du premier intervalle
-			nbvalpossible = intArray1[1] - intArray1[0];  //nb val possibles
-			System.out.println("nb : " + nbvalpossible);
+			nbvalpossible = intArray1[1] - intArray1[0];  //nb val possibles dans cet intervalle
 			while (nbn == 0 && nbvalpossible != 1){
-				nbn = (int) (Math.random()*nbvalpossible);  // nb noeud dans ABRI
+				nbn = (int) (Math.random()*nbvalpossible);  // nb noeud dans ABRI tire aleatoirement
 			}
 			if(nbvalpossible == 1){
-				nbn = nbvalpossible;
+				nbn = nbvalpossible;	// Si juste une valeur possible alors un seul noeud
 			}
-			System.out.println(nbn);
-			intArray2 = new int[nbn];  //crÈation d'un tableau d'ÈlÈment
-			for(int j = 0; j != nbn; j++){
+			intArray2 = new int[nbn];   //crÈation d'un tableau d'ÈlÈment de l'intervalle 
+			for(int j = 0; j != nbn; j++){	//On cree nbn element que l'on ajoute dans le tableau d'element
 				element = (int) (intArray1[0] + Math.random() * (intArray1[1] - intArray1[0] + 1));
 				intArray2[j] = element;
 			}
-			abri.CreerABRI(intArray1, intArray2);
-			racine = inserer(abri, racine);
+			abri.CreerABRI(intArray1, intArray2);  // creation de l'ABRI avec l'intervalle {min, max} et le tableau d'element
+			racine = inserer(abri, racine);		// Enfin, insertion dans l'AABRI de l'ABRI
 			nbn = 0;
 		}
 		return this;		
@@ -140,12 +141,12 @@ public class AABRI {
 		return racine;
 	}
 	
-	public void insererUnElement(){
+	public void insererUnElement(){  // Permet l'insertion d'un entier (noeud) dans l'AABRI 
 		int element;
 		element = 0;
 		Scanner saisie = new Scanner(System.in);
 		System.out.println("Element a ajouter : ");
-		element = saisie.nextInt();
+		element = saisie.nextInt();		// Element a ajouter
 		if(this.racine != null)
 		{
 			racine.insererElement(element);
@@ -156,12 +157,12 @@ public class AABRI {
 		}
 	}
 	
-	public void supprimerUnElement(){
+	public void supprimerUnElement(){  // Suppression d'un element de l'AABRI
 		int element;
 		element = 0;
 		Scanner saisie = new Scanner(System.in);
 		System.out.println("Element a supprimer : ");
-		element = saisie.nextInt();
+		element = saisie.nextInt();		// Entier a supprimer de l'AABRI
 		if(this.racine != null)
 		{
 			racine.supprimerElement(element);
@@ -172,7 +173,7 @@ public class AABRI {
 		}
 	}
 	
-	public void afficherAABRI(){
+	public void afficherAABRI(){		// Affichage de l'AABRI
 		String chaine = "";
 		if(this.racine != null){
 			chaine = racine.afficherToutArbre();
@@ -183,7 +184,7 @@ public class AABRI {
 		}
 	}
 	
-	public static void triBulleCroissant(int tableau[]) {
+	public static void triBulleCroissant(int tableau[]) {	//Tri d'un tableau d'entier
 		int longueur = tableau.length;
 		int tampon = 0;
 		boolean permut; 
